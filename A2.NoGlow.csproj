@@ -11,8 +11,8 @@
     <ProjectGuid>{B41725BB-6D4D-4A4E-BFE6-6B498FA182F5}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Template</RootNamespace>
-    <AssemblyName>Template</AssemblyName>
+    <RootNamespace>A2.NoGlow</RootNamespace>
+    <AssemblyName>A2.NoGlow</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -51,7 +51,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Plugin.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>AssemblyInfo.tt</DependentUpon>
+    </Compile>
     <Compile Include="Properties\IgnoreAccessModifiers.cs" />
+    <Compile Include="Properties\PluginInfo.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PluginInfo.tt</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Build\Thunderstore\icon.png" />
@@ -81,6 +91,11 @@
       <DependentUpon>manifest.tt</DependentUpon>
     </None>
     <None Include="LICENSE.md" />
+    <None Include="Properties\AssemblyVersion.props">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>AssemblyVersion.tt</DependentUpon>
+    </None>
     <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>

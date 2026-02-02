@@ -1,0 +1,77 @@
+﻿<#@ template language="C#" hostspecific="true" #>
+<#@ output extension=".cs" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text.RegularExpressions" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#
+    var directory = Path.Combine(Path.GetDirectoryName(Host.TemplateFile), "Code");
+    var classFiles = Directory
+        .GetFiles(directory, "*.cs", SearchOption.AllDirectories)
+        .Where(f => !f.EndsWith(".tt.cs", StringComparison.OrdinalIgnoreCase) && Path.GetFileName(f) != Path.GetFileName(Host.TemplateFile))  // exclude itself if necessary
+        .ToList();
+
+    var classNameRegex = new Regex(@"\bclass\s+(\w+)", RegexOptions.Compiled);
+    var classNames = new List<string>();
+    foreach (var file in classFiles)
+    {
+        var content = File.ReadAllText(file);
+        var match = classNameRegex.Match(content);
+        if (match.Success)
+        {
+            var className = match.Groups[1].Value;
+            classNames.Add(className);
+        }
+    }
+#>
+namespace A2.NoGlow.Prefabs
+{
+    internal static class Flags
+    {
+        public static bool Evaluate()
+        {
+            var result = false;
+<#
+            foreach(var className in classNames)
+            {
+#>
+            result = Evaluate(ref <#= className #>, PluginConfig.DisableGlowOn<#= className #>.Value) || result;
+<#
+            }
+#>
+            return result;
+        }
+
+        private static bool Evaluate(ref PrefabState state, bool config)
+        {
+            if (config)
+            {
+                state = PrefabState.ToModify;
+                return true;
+            }
+
+            if (state == PrefabState.ToRestore)
+            {
+                return false;
+            }
+            if (state == PrefabState.Modified)
+            {
+                state = PrefabState.ToRestore;
+                return true;
+            }
+
+            state = PrefabState.Unknown;
+            return false;
+        }
+
+<#
+        foreach(var className in classNames)
+        {
+#>
+        public static PrefabState <#= className #> = PrefabState.Unknown;
+<#
+        }
+#>
+    }
+}

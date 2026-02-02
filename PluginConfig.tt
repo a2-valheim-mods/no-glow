@@ -1,0 +1,97 @@
+﻿<#@ template language="C#" hostspecific="true" #>
+<#@ output extension=".cs" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text.RegularExpressions" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#
+    var directory = Path.Combine(Path.GetDirectoryName(Host.TemplateFile), "Prefabs", "Code");
+    var classFiles = Directory
+        .GetFiles(directory, "*.cs", SearchOption.AllDirectories)
+        .Where(f => !f.EndsWith(".tt.cs", StringComparison.OrdinalIgnoreCase) && Path.GetFileName(f) != Path.GetFileName(Host.TemplateFile))  // exclude itself if necessary
+        .ToList();
+
+    var classNameRegex = new Regex(@"\bclass\s+(\w+)", RegexOptions.Compiled);
+    var classNames = new List<string>();
+    foreach (var file in classFiles)
+    {
+        var content = File.ReadAllText(file);
+        var match = classNameRegex.Match(content);
+        if (match.Success)
+        {
+            var className = match.Groups[1].Value;
+            classNames.Add(className);
+        }
+    }
+
+    var classGroups = new Dictionary<string, string>();
+    foreach (var file in classFiles)
+    {
+        var content = File.ReadAllText(file);
+        var match = classNameRegex.Match(content);
+        if (!match.Success) continue;
+        var className = match.Groups[1].Value;
+        var relativePath = file.Substring(directory.Length).TrimStart(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+        var parts = relativePath.Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+        string group;
+        if (parts.Length <= 1)
+        {
+            group = "none";
+        }
+        else
+        {
+            group = parts[0];
+        }
+        classGroups[className] = group;
+    }
+#>
+using BepInEx.Configuration;
+using A2.NoGlow.Prefabs;
+using A2.NoGlow.Prefabs.Code;
+
+namespace A2.NoGlow
+{
+    internal class PluginConfig
+    {
+        public static ConfigFile File;
+
+<#
+        foreach(var className in classNames)
+        {
+#>
+        public static ConfigEntry<bool> DisableGlowOn<#= className #>;
+<#
+        }
+#>
+
+        public static void Bind(ConfigFile config)
+        {
+            if (File != null) return;
+            File = config;
+
+<#
+            foreach(var className in classNames)
+            {
+#>
+            DisableGlowOn<#= className #> = WithChangedHandler(config.Bind("<#= classGroups[className] #>", <#= className #>.Name, true, <#= className #>.Name));
+<#
+            }
+#>
+        }
+
+        private static ConfigEntry<bool> WithChangedHandler(ConfigEntry<bool> configEntry)
+        {
+            if (configEntry != null)
+            {
+                configEntry.SettingChanged += OnSettingsChanged;
+            }
+            return configEntry;
+        }
+
+        private static void OnSettingsChanged(object sender, System.EventArgs e)
+        {
+            Controller.Update();
+        }
+    }
+}

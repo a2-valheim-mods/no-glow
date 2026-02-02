@@ -1,0 +1,120 @@
+﻿<#@ template language="C#" hostspecific="true" #>
+<#@ output extension=".cs" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text.RegularExpressions" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#
+    var directory = Path.Combine(Path.GetDirectoryName(Host.TemplateFile), "Code");
+    var classFiles = Directory
+        .GetFiles(directory, "*.cs", SearchOption.AllDirectories)
+        .Where(f => !f.EndsWith(".tt.cs", StringComparison.OrdinalIgnoreCase) && Path.GetFileName(f) != Path.GetFileName(Host.TemplateFile))  // exclude itself if necessary
+        .ToList();
+
+    var classNameRegex = new Regex(@"\bclass\s+(\w+)", RegexOptions.Compiled);
+    var classNames = new List<string>();
+    var prefabNameRegex = new Regex(@"(?<=\bconst\s+string\s+)\bPrefabName\w*\b", RegexOptions.Compiled);
+    var prefabNamesByClass = new Dictionary<string, List<string>>();
+    foreach (var file in classFiles)
+    {
+        var content = File.ReadAllText(file);
+        var classMatches = classNameRegex.Matches(content);
+        foreach (Match classMatch in classMatches)
+        {
+            var className = classMatch.Groups[1].Value;
+            classNames.Add(className);
+            prefabNamesByClass[className] = new List<string>();
+            var prefabMatches = prefabNameRegex.Matches(content);
+            foreach (Match prefabMatch in prefabMatches)
+            {
+                var name = prefabMatch.Value;
+                if (!prefabNamesByClass[className].Contains(name)) prefabNamesByClass[className].Add(name);
+            }
+        }
+    }
+
+#>
+using Jotunn.Managers;
+using A2.NoGlow.Prefabs.Code;
+using System.Collections.Generic;
+using UnityEngine;
+
+namespace A2.NoGlow.Prefabs
+{
+    internal static class Controller
+    {
+        private static readonly HashSet<string> Names =
+        [
+<#
+            foreach(var className in classNames)
+            {
+                foreach(var prefabName in prefabNamesByClass[className])
+                {
+#>
+            <#= className #>.<#= prefabName #>,
+<#
+                }
+            }
+#>
+        ];
+
+        private static Dictionary<string, GameObject> Find()
+        {
+            var prefabs = new Dictionary<string, GameObject>();
+            foreach (var name in Names)
+            {
+                var prefab = PrefabManager.Instance.GetPrefab(name);
+                if (prefab == null) continue;
+                if (string.IsNullOrEmpty(prefab.name)) continue;
+
+                var prefabName = prefab.name;
+                prefabs.Add(prefabName, prefab);
+            }
+            return prefabs;
+        }
+        private static bool Modify(Dictionary<string, GameObject> prefabs)
+        {
+            var result = true;
+<#
+            foreach(var className in classNames)
+            {
+#>
+            result = <#= className #>.Modify(prefabs) && result;
+<#
+            }
+#>
+            return result;
+        }
+        private static bool Restore(Dictionary<string, GameObject> prefabs)
+        {
+            var result = true;
+<#
+            foreach(var className in classNames)
+            {
+#>
+            result = <#= className #>.Restore(prefabs) && result;
+<#
+            }
+#>
+            return result;
+        }
+
+        public static bool Update()
+        {
+            if (!Flags.Evaluate())
+            {
+                return false;
+            }
+            var prefabs = Find();
+            if (prefabs.Count == 0)
+            {
+                return false;
+            }
+            var result = false;
+            result = Restore(prefabs) || result;
+            result = Modify(prefabs) || result;
+            return result;
+        }
+    }
+}

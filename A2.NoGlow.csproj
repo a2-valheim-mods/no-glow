@@ -21,6 +21,10 @@
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
   </PropertyGroup>
+  <PropertyGroup>
+    <LangVersion>12.0</LangVersion>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
@@ -51,6 +55,51 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Plugin.cs" />
+    <Compile Include="PluginConfig.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>PluginConfig.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Prefabs\Code\Plants\BlueMushroom.cs" />
+    <Compile Include="Prefabs\Code\Plants\JotunPuffs.cs" />
+    <Compile Include="Prefabs\Code\Plants\LargeGlowingMushroom.cs" />
+    <Compile Include="Prefabs\Code\Plants\Magecap.cs" />
+    <Compile Include="Prefabs\Code\Plants\Thistle.cs" />
+    <Compile Include="Prefabs\Code\Plants\YellowMushroom.cs" />
+    <Compile Include="Prefabs\Code\Structures\ArtisanTable.cs" />
+    <Compile Include="Prefabs\Code\Items\CryptKey.cs" />
+    <Compile Include="Prefabs\Code\Structures\GaldrTable.cs" />
+    <Compile Include="Prefabs\Code\Items\MeadEitrMinor.cs" />
+    <Compile Include="Prefabs\Code\Items\MeadFrostResist.cs" />
+    <Compile Include="Prefabs\Code\Items\MeadPoisonResist.cs" />
+    <Compile Include="Prefabs\Code\Items\MeadStaminaLingering.cs" />
+    <Compile Include="Prefabs\Code\Items\MeadStaminaMedium.cs" />
+    <Compile Include="Prefabs\Code\Items\MeadStaminaMinor.cs" />
+    <Compile Include="Prefabs\Code\Weapons\CrystalBattleaxe.cs" />
+    <Compile Include="Prefabs\Code\Weapons\DeadRaiser.cs" />
+    <Compile Include="Prefabs\Code\Weapons\DraugrFang.cs" />
+    <Compile Include="Prefabs\Code\Weapons\Dyrnwyn.cs" />
+    <Compile Include="Prefabs\Code\Weapons\Frostner.cs" />
+    <Compile Include="Prefabs\Code\Weapons\Himminafl.cs" />
+    <Compile Include="Prefabs\Code\Weapons\JotunBane.cs" />
+    <Compile Include="Prefabs\Code\Weapons\Mistwalker.cs" />
+    <Compile Include="Prefabs\Code\Weapons\Porcupine.cs" />
+    <Compile Include="Prefabs\Code\Weapons\SpineSnap.cs" />
+    <Compile Include="Prefabs\Code\Weapons\StaffOfEmbers.cs" />
+    <Compile Include="Prefabs\Code\Weapons\StaffOfFrost.cs" />
+    <Compile Include="Prefabs\Code\Weapons\StaffOfProtection.cs" />
+    <Compile Include="Prefabs\Code\Weapons\StaffOfTheWild.cs" />
+    <Compile Include="Prefabs\Controller.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Controller.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Prefabs\Flags.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Flags.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Prefabs\PrefabState.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -62,6 +111,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>PluginInfo.tt</DependentUpon>
     </Compile>
+    <Compile Include="Properties\IsExternalInitShim.cs" />
+    <Compile Include="Unity\GameObjectExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Build\Thunderstore\icon.png" />
@@ -69,8 +120,24 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>manifest.json</LastGenOutput>
     </Content>
+    <Content Include="README.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>README.md</LastGenOutput>
+    </Content>
     <None Include="Build\Thunderstore\Helpers\BepInExPackVersion.tt.part" />
     <None Include="Build\Thunderstore\Helpers\JotunnVersion.tt.part" />
+    <Content Include="PluginConfig.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>PluginConfig.cs</LastGenOutput>
+    </Content>
+    <Content Include="Prefabs\Controller.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Controller.cs</LastGenOutput>
+    </Content>
+    <Content Include="Prefabs\Flags.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>Flags.cs</LastGenOutput>
+    </Content>
     <Content Include="Properties\AssemblyInfo.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>AssemblyInfo.cs</LastGenOutput>
@@ -83,6 +150,7 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>PluginInfo.cs</LastGenOutput>
     </Content>
+    <None Include="Build\Thunderstore\PostBuildStripBOM.ps1" />
     <None Include="Consts\PluginConsts.tt.part" />
     <None Include="CHANGELOG.md" />
     <None Include="Build\Thunderstore\manifest.json">
@@ -96,13 +164,25 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>AssemblyVersion.tt</DependentUpon>
     </None>
-    <None Include="README.md" />
+    <None Include="README.md">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>README.tt</DependentUpon>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup />
+  <PropertyGroup>
+    <!-- TEXT TEMPLATES CONFIGUATION -->
+    <TextTemplatingPath>$(MSBuildExtensionsPath)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TextTemplating</TextTemplatingPath>
+    <TransformOnBuild>true</TransformOnBuild>
+    <OverwriteReadOnlyOutputFiles>true</OverwriteReadOnlyOutputFiles>
+    <TransformOutOfDateOnly>false</TransformOutOfDateOnly>
+  </PropertyGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(TextTemplatingPath)\Microsoft.TextTemplating.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
@@ -110,14 +190,10 @@
     <Error Condition="!Exists('Build\packages\JotunnLib.2.27.1\build\JotunnLib.props')" Text="$([System.String]::Format('$(ErrorText)', 'Build\packages\JotunnLib.2.27.1\build\JotunnLib.props'))" />
   </Target>
   <Import Project="$(ProjectDir)Properties\AssemblyVersion.props" Condition="Exists('$(ProjectDir)Properties\AssemblyVersion.props')" />
-  <Target Name="BeforeBuild">
-    <ItemGroup>
-      <T4Templates Include="**\*.tt" />
-    </ItemGroup>
-    <Message Text="Running T4 templates..." Importance="high" />
-    <Exec Command="&quot;$(DevEnvDir)TextTransform.exe&quot; %(T4Templates.FullPath)" />
-  </Target>
   <Target Name="PostBuildPackage" AfterTargets="Build">
+    <!-- Delete existing package directory if it exists -->
+    <Message Text="Cleaning package directory: $(ProjectDir)Build\Package" Importance="High" />
+    <RemoveDir Directories="$(ProjectDir)Build\Package" Condition="Exists('$(ProjectDir)Build\Package')" />
     <!-- Create the target directory if it doesn't exist -->
     <Message Text="Preparing package: $(ProjectDir)Build\Package\plugins" Importance="High" />
     <MakeDir Directories="$(ProjectDir)Build\Package" Condition="!Exists('$(ProjectDir)Build\Package')" />
@@ -138,6 +214,7 @@
     <Copy SourceFiles="$(ProjectDir)CHANGELOG.md" DestinationFolder="$(ProjectDir)Build\Package" SkipUnchangedFiles="true" />
     <Message Text="README.md -&gt; $(ProjectDir)Build\Package\README.md" Importance="High" />
     <Copy SourceFiles="$(ProjectDir)README.md" DestinationFolder="$(ProjectDir)Build\Package" SkipUnchangedFiles="true" />
+    <Exec Command="powershell -NoLogo -NoProfile -ExecutionPolicy Bypass -File &quot;$(ProjectDir)Build\Thunderstore\PostBuildStripBOM.ps1&quot;" />
     <!-- Create ZIP archive -->
     <Message Text="Creating ZIP archive: $(ProjectDir)Build\$(AssemblyName)-$(AssemblyVersion)-$(Configuration).zip" Importance="High" />
     <Exec Command="powershell -NoLogo -NoProfile -Command &quot;if(Test-Path '$(ProjectDir)Build\$(AssemblyName)-$(AssemblyVersion)-$(Configuration).zip'){Remove-Item '$(ProjectDir)Build\$(AssemblyName)-$(AssemblyVersion)-$(Configuration).zip'}; Compress-Archive -Path '$(ProjectDir)Build\Package\*' -DestinationPath '$(ProjectDir)Build\$(AssemblyName)-$(AssemblyVersion)-$(Configuration).zip'&quot;" />

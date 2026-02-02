@@ -1,0 +1,67 @@
+﻿<#@ template language="C#" hostspecific="true"#>
+<#@ output extension=".md" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text.RegularExpressions" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ include file="Consts\PluginConsts.tt.part" #>
+# <#= NAME #>
+<#= DESCRIPTION #>
+
+## Features
+Can remove glow from:
+<#
+    var baseDir = Path.Combine(Path.GetDirectoryName(Host.TemplateFile), "Prefabs", "Code");
+    var rootFiles = Directory.GetFiles(baseDir, "*.cs", SearchOption.TopDirectoryOnly).OrderBy(f => Path.GetFileName(f)).ToArray();
+    if (rootFiles.Length > 0)
+    {
+#>
+
+<#
+        foreach (var file in rootFiles)
+        {
+            string content = File.ReadAllText(file);
+            var match = Regex.Match(content, @"public\s+const\s+string\s+Name\s*=\s*""([^""]+)""");
+            if (match.Success)
+            {
+                string nameValue = match.Groups[1].Value;
+#>
+<#= nameValue #>
+<#
+            }
+        }
+    }
+
+    var subDirs = Directory.GetDirectories(baseDir).OrderBy(d => Path.GetFileName(d)).ToArray();
+    foreach (var dir in subDirs)
+    {
+        string groupName = Path.GetFileName(dir);
+
+#>
+
+| <#= groupName #> |
+|----|
+<#
+        var files = Directory.GetFiles(dir, "*.cs", SearchOption.AllDirectories).OrderBy(f => Path.GetFileName(f)).ToArray();
+        var nameValues = new List<string>();
+        foreach (var file in files)
+        {
+            string content = File.ReadAllText(file);
+            var match = Regex.Match(content, @"public\s+const\s+string\s+Name\s*=\s*""([^""]+)""");
+            if (match.Success)
+            {
+                string nameValue = match.Groups[1].Value;
+                nameValues.Add(nameValue);
+            }
+        }
+        foreach (var name in nameValues.OrderBy(n => n))
+        {
+#>
+| <#= name #> |
+<#
+        }
+    }
+#>
+
+Removal of glow can be disabled in mod options for each element separately.

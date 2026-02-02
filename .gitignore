@@ -9,7 +9,6 @@ Properties/AssemblyInfo.cs
 Properties/AssemblyVersion.props
 Properties/PluginInfo.cs
 Build/Thunderstore/manifest.json
-README.md
 PluginConfig.cs
 Prefabs/Flags.cs
 Prefabs/Controller.cs

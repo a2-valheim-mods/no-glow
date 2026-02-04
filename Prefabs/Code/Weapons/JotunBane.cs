@@ -1,6 +1,7 @@
 ﻿using A2.NoGlow.Unity;
 using System.Collections.Generic;
 using UnityEngine;
+using static A2.NoGlow.Prefabs.PrefabTools;
 
 namespace A2.NoGlow.Prefabs.Code
 {
@@ -9,57 +10,22 @@ namespace A2.NoGlow.Prefabs.Code
         public const string Name = "Jotun Bane";
         public const string PrefabName = "AxeJotunBane";
 
-        public static bool Modify(Dictionary<string, GameObject> prefabs)
+        public static bool Modify(IReadOnlyDictionary<string, GameObject> prefabs, IReadOnlyDictionary<string, GameObject[]> clones)
+            => TryModify(prefabs, clones, PrefabName, ref Flags.JotunBane, Modify, nameof(JotunBane), nameof(Modify));
+        public static bool Restore(IReadOnlyDictionary<string, GameObject> prefabs, IReadOnlyDictionary<string, GameObject[]> clones)
+            => TryRestore(prefabs, clones, PrefabName, ref Flags.JotunBane, Restore, nameof(JotunBane), nameof(Restore));
+
+        private static bool Modify(GameObject prefab)
         {
-            try
-            {
-                if (Flags.JotunBane != PrefabState.ToModify) return false;
-#if DEBUG
-                Jotunn.Logger.LogInfo($"{nameof(JotunBane)}.{nameof(Modify)}: modifying state of the prefab {PrefabName}");
-#endif
-                if (!prefabs.TryGetValue(PrefabName, out var prefab))
-                {
-                    Jotunn.Logger.LogInfo($"{nameof(JotunBane)}.{nameof(Modify)}: Prefab {PrefabName} not found.");
-                    return false;
-                }
-
-                var result = true;
-                result = prefab.SetChildrenInactive("Point light", "Glow", "poison drip", "poison splat") && result;
-
-                if (result) Flags.JotunBane = PrefabState.Modified;
-                return result;
-            }
-            catch (System.Exception ex)
-            {
-                Jotunn.Logger.LogError($"{nameof(JotunBane)}.{nameof(Modify)}: Exception occurred:\n{ex}");
-                return false;
-            }
+            var result = true;
+            result = prefab.SetChildrenInactive("Point light", "Glow", "poison drip", "poison splat") && result;
+            return result;
         }
-        public static bool Restore(Dictionary<string, GameObject> prefabs)
+        private static bool Restore(GameObject prefab)
         {
-            try
-            {
-                if (Flags.JotunBane != PrefabState.ToRestore) return false;
-#if DEBUG
-                Jotunn.Logger.LogInfo($"{nameof(JotunBane)}.{nameof(Restore)}: restoring state of the prefab {PrefabName}");
-#endif
-                if (!prefabs.TryGetValue(PrefabName, out var prefab))
-                {
-                    Jotunn.Logger.LogInfo($"{nameof(JotunBane)}.{nameof(Restore)}: Prefab {PrefabName} not found.");
-                    return false;
-                }
-
-                var result = true;
-                result = prefab.SetChildrenActive("Point light", "Glow", "poison drip", "poison splat") && result;
-
-                if (result) Flags.JotunBane = PrefabState.Restored;
-                return result;
-            }
-            catch (System.Exception ex)
-            {
-                Jotunn.Logger.LogError($"{nameof(JotunBane)}.{nameof(Restore)}: Exception occurred:\n{ex}");
-                return false;
-            }
+            var result = true;
+            result = prefab.SetChildrenActive("Point light", "Glow", "poison drip", "poison splat") && result;
+            return result;
         }
     }
 }

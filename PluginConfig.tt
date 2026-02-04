@@ -65,7 +65,7 @@ namespace A2.NoGlow
         /// <summary>
         /// The <see cref="ConfigFile"/> instance used for all plugin configuration entries.
         /// </summary>
-        public static ConfigFile File;
+        public static ConfigFile? File;
 
 <#
         foreach(var className in classNames)

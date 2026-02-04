@@ -1,4 +1,11 @@
-﻿## [v1.0.0](https://github.com/a2-valheim-mods/no-glow/releases/tag/v1.0.0)
+﻿## [v1.1.0](https://github.com/a2-valheim-mods/no-glow/releases/tag/v1.1.0)
+
+Changes:
+
+- Fixed improper prefab state transitions.
+- Modify instantiated clones.
+
+## [v1.0.0](https://github.com/a2-valheim-mods/no-glow/releases/tag/v1.0.0)
 
 Changes:
 

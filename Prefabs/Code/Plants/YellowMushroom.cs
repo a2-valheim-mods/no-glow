@@ -1,6 +1,7 @@
 ﻿using A2.NoGlow.Unity;
 using System.Collections.Generic;
 using UnityEngine;
+using static A2.NoGlow.Prefabs.PrefabTools;
 
 namespace A2.NoGlow.Prefabs.Code
 {
@@ -10,93 +11,33 @@ namespace A2.NoGlow.Prefabs.Code
         public const string PrefabName1 = "Pickable_Mushroom_yellow";
         public const string PrefabName2 = "MushroomYellow";
 
-        public static bool Modify(Dictionary<string, GameObject> prefabs)
+        public static bool Modify(IReadOnlyDictionary<string, GameObject> prefabs, IReadOnlyDictionary<string, GameObject[]> clones)
+            => TryModify(prefabs, clones, PrefabName1, PrefabName2, ref Flags.YellowMushroom, ModifyPrefab1, ModifyPrefab2, nameof(YellowMushroom), nameof(Modify));
+        public static bool Restore(IReadOnlyDictionary<string, GameObject> prefabs, IReadOnlyDictionary<string, GameObject[]> clones)
+            => TryRestore(prefabs, clones, PrefabName1, PrefabName2, ref Flags.YellowMushroom, RestorePrefab1, RestorePrefab2, nameof(YellowMushroom), nameof(Restore));
+
+        private static bool ModifyPrefab1(GameObject prefab)
         {
-            try
-            {
-                if (Flags.YellowMushroom != PrefabState.ToModify) return false;
-#if DEBUG
-                Jotunn.Logger.LogInfo($"{nameof(YellowMushroom)}.{nameof(Modify)}: modifying state of the prefabs {PrefabName1}, {PrefabName2}");
-#endif
-
-                var result = true;
-                result = ModifyPrefab1(prefabs) && result;
-                result = ModifyPrefab2(prefabs) && result;
-
-                if (result) Flags.YellowMushroom = PrefabState.Modified;
-                return result;
-            }
-            catch (System.Exception ex)
-            {
-                Jotunn.Logger.LogError($"{nameof(YellowMushroom)}.{nameof(Modify)}: Exception occurred:\n{ex}");
-                return false;
-            }
-        }
-        public static bool Restore(Dictionary<string, GameObject> prefabs)
-        {
-            try
-            {
-                if (Flags.YellowMushroom != PrefabState.ToRestore) return false;
-#if DEBUG
-                Jotunn.Logger.LogInfo($"{nameof(YellowMushroom)}.{nameof(Restore)}: restoring state of the prefabs {PrefabName1}, {PrefabName2}");
-#endif
-
-                var result = true;
-                result = RestorePrefab1(prefabs) && result;
-                result = RestorePrefab2(prefabs) && result;
-
-                if (result) Flags.YellowMushroom = PrefabState.Restored;
-                return result;
-            }
-            catch (System.Exception ex)
-            {
-                Jotunn.Logger.LogError($"{nameof(YellowMushroom)}.{nameof(Restore)}: Exception occurred:\n{ex}");
-                return false;
-            }
-        }
-
-        private static bool ModifyPrefab1(Dictionary<string, GameObject> prefabs)
-        {
-            if (!prefabs.TryGetValue(PrefabName1, out var prefab))
-            {
-                Jotunn.Logger.LogInfo($"{nameof(YellowMushroom)}.{nameof(ModifyPrefab1)}: Prefab {PrefabName1} not found.");
-                return false;
-            }
             var result = true;
             result = prefab.SetChildrenInactive("Point light") && result;
             result = prefab.DisableShaderKeyword("visual", "_EMISSION") && result;
             return result;
         }
-        private static bool ModifyPrefab2(Dictionary<string, GameObject> prefabs)
+        private static bool ModifyPrefab2(GameObject prefab)
         {
-            if (!prefabs.TryGetValue(PrefabName2, out var prefab))
-            {
-                Jotunn.Logger.LogInfo($"{nameof(YellowMushroom)}.{nameof(ModifyPrefab2)}: Prefab {PrefabName2} not found.");
-                return false;
-            }
             var result = true;
             result = prefab.SetChildrenInactive("Point light") && result;
             return result;
         }
-        private static bool RestorePrefab1(Dictionary<string, GameObject> prefabs)
+        private static bool RestorePrefab1(GameObject prefab)
         {
-            if (!prefabs.TryGetValue(PrefabName1, out var prefab))
-            {
-                Jotunn.Logger.LogInfo($"{nameof(YellowMushroom)}.{nameof(RestorePrefab1)}: Prefab {PrefabName1} not found.");
-                return false;
-            }
             var result = true;
             result = prefab.SetChildrenActive("Point light") && result;
             result = prefab.EnableShaderKeyword("visual", "_EMISSION") && result;
             return result;
         }
-        private static bool RestorePrefab2(Dictionary<string, GameObject> prefabs)
+        private static bool RestorePrefab2(GameObject prefab)
         {
-            if (!prefabs.TryGetValue(PrefabName2, out var prefab))
-            {
-                Jotunn.Logger.LogInfo($"{nameof(YellowMushroom)}.{nameof(RestorePrefab2)}: Prefab {PrefabName2} not found.");
-                return false;
-            }
             var result = true;
             result = prefab.SetChildrenActive("Point light") && result;
             return result;

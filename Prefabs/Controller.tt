@@ -39,6 +39,7 @@ using Jotunn.Managers;
 using A2.NoGlow.Prefabs.Code;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 namespace A2.NoGlow.Prefabs
 {
@@ -115,18 +116,44 @@ namespace A2.NoGlow.Prefabs
             return prefabs;
         }
         /// <summary>
+        /// Finds all active and inactive instances of prefabs in the scene whose original names
+        /// are included in <see cref="Names"/> and have been instantiated (have "(Clone)" in their name).
+        /// </summary>
+        /// <returns>
+        /// A dictionary mapping the original prefab name (without "(Clone)") to an array of 
+        /// <see cref="GameObject"/> clones currently present in the scene. 
+        /// If no clones exist for a given prefab, that prefab will not appear in the dictionary.
+        /// </returns>
+        private static Dictionary<string, GameObject[]> FindClones()
+        {
+            var allTransforms = Object.FindObjectsByType<Transform>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            return allTransforms
+                .Select(t => t.gameObject)
+                .Where(go =>
+                {
+                    var originalName = go.name.EndsWith("(Clone)")
+                        ? go.name.Substring(0, go.name.Length - 7)
+                        : go.name;
+                    return Names.Contains(originalName);
+                })
+                .GroupBy(go => go.name.EndsWith("(Clone)")
+                        ? go.name.Substring(0, go.name.Length - 7)
+                        : go.name)
+                .ToDictionary(g => g.Key, g => g.ToArray());
+        }
+        /// <summary>
         /// Applies modifications (disables glow) to all prefabs based on their current state.
         /// </summary>
         /// <param name="prefabs">Dictionary of prefab names to modify.</param>
         /// <returns><c>true</c> if all modifications succeeded; otherwise <c>false</c>.</returns>
-        private static bool Modify(Dictionary<string, GameObject> prefabs)
+        private static bool Modify(IReadOnlyDictionary<string, GameObject> prefabs, Dictionary<string, GameObject[]> clones)
         {
             var result = true;
 <#
             foreach(var className in classNames)
             {
 #>
-            result = <#= className #>.Modify(prefabs) && result;
+            result = <#= className #>.Modify(prefabs, clones) && result;
 <#
             }
 #>
@@ -137,14 +164,14 @@ namespace A2.NoGlow.Prefabs
         /// </summary>
         /// <param name="prefabs">Dictionary of prefab names to restore.</param>
         /// <returns><c>true</c> if all restorations succeeded; otherwise <c>false</c>.</returns>
-        private static bool Restore(Dictionary<string, GameObject> prefabs)
+        private static bool Restore(IReadOnlyDictionary<string, GameObject> prefabs, Dictionary<string, GameObject[]> clones)
         {
             var result = true;
 <#
             foreach(var className in classNames)
             {
 #>
-            result = <#= className #>.Restore(prefabs) && result;
+            result = <#= className #>.Restore(prefabs, clones) && result;
 <#
             }
 #>
@@ -173,9 +200,10 @@ namespace A2.NoGlow.Prefabs
             {
                 return false;
             }
+            var clones = FindClones();
             var result = false;
-            result = Restore(prefabs) || result;
-            result = Modify(prefabs) || result;
+            result = Restore(prefabs, clones) || result;
+            result = Modify(prefabs, clones) || result;
             return result;
         }
     }

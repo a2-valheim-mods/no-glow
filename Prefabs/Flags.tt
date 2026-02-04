@@ -127,6 +127,22 @@ namespace A2.NoGlow.Prefabs
             // disabling is turned on in config, so prefab should be modified
             if (config)
             {
+                if (state == PrefabState.ToModify)
+                {
+                    // already marked to modify
+                    return true;
+                }
+                if (state == PrefabState.Modified)
+                {
+                    // already modified
+                    return false;
+                }
+                if (state == PrefabState.ToRestore)
+                {
+                    // not yet restored, can be set to modified
+                    state = PrefabState.Modified;
+                    return false;
+                }
 #if DEBUG
                 Jotunn.Logger.LogInfo($"{nameof(Flags)}.{nameof(Evaluate)}: {state} -> {PrefabState.ToModify}");
 #endif
@@ -138,6 +154,7 @@ namespace A2.NoGlow.Prefabs
             if (state == PrefabState.ToRestore)
             {
                 // already marked to restore
+                return true;
             }
             if (state == PrefabState.Modified)
             {
@@ -147,6 +164,15 @@ namespace A2.NoGlow.Prefabs
 #endif
                 state = PrefabState.ToRestore;
                 return true;
+            }
+            if (state == PrefabState.ToModify)
+            {
+                // not yet modifed, mark as restored
+#if DEBUG
+                Jotunn.Logger.LogInfo($"{nameof(Flags)}.{nameof(Evaluate)}: {state} -> {PrefabState.Restored}");
+#endif
+                state = PrefabState.Restored;
+                return false;
             }
             return false;
         }

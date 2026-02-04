@@ -1,6 +1,4 @@
-﻿#nullable enable
-
-using A2.NoGlow.Prefabs;
+﻿using A2.NoGlow.Prefabs;
 using BepInEx;
 using HarmonyLib;
 using Jotunn.Managers;

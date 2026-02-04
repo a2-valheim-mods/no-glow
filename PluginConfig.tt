@@ -52,22 +52,42 @@ using A2.NoGlow.Prefabs.Code;
 
 namespace A2.NoGlow
 {
+    /// <summary>
+    /// Manages configuration entries for enabling or disabling glow effects
+    /// on various prefabs in the game.
+    /// </summary>
+    /// <remarks>
+    /// This class is generated via a T4 template (.tt) based on the prefab classes
+    /// defined under <c>A2.NoGlow.Prefabs.Code</c>.
+    /// </remarks>
     internal class PluginConfig
     {
+        /// <summary>
+        /// The <see cref="ConfigFile"/> instance used for all plugin configuration entries.
+        /// </summary>
         public static ConfigFile File;
 
 <#
         foreach(var className in classNames)
         {
 #>
-        public static ConfigEntry<bool> DisableGlowOn<#= className #>;
+        public static ConfigEntry<bool>? DisableGlowOn<#= className #>;
 <#
         }
 #>
 
+        /// <summary>
+        /// Initializes the configuration entries for all prefabs and sets up
+        /// change handlers that trigger <see cref="Controller.Update"/> when values change.
+        /// </summary>
+        /// <param name="config">The <see cref="ConfigFile"/> to bind configuration entries to.</param>
+        /// <remarks>
+        /// This method is safe to call multiple times; subsequent calls
+        /// will be ignored if <see cref="File"/> is already set.
+        /// </remarks>
         public static void Bind(ConfigFile config)
         {
-            if (File != null) return;
+            if (File is not null) return;
             File = config;
 
 <#
@@ -82,16 +102,13 @@ namespace A2.NoGlow
 
         private static ConfigEntry<bool> WithChangedHandler(ConfigEntry<bool> configEntry)
         {
-            if (configEntry != null)
+            if (configEntry is not null)
             {
                 configEntry.SettingChanged += OnSettingsChanged;
             }
             return configEntry;
         }
 
-        private static void OnSettingsChanged(object sender, System.EventArgs e)
-        {
-            Controller.Update();
-        }
+        private static void OnSettingsChanged(object sender, System.EventArgs e) =>  Controller.Update();
     }
 }

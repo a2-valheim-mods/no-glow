@@ -13,7 +13,6 @@ namespace A2.NoGlow.Prefabs.Code
         {
             try
             {
-                if (!PluginConfig.DisableGlowOnGaldrTable.Value) return true;
                 if (Flags.GaldrTable != PrefabState.ToModify) return false;
 #if DEBUG
                 Jotunn.Logger.LogInfo($"{nameof(GaldrTable)}.{nameof(Modify)}: modifying state of the prefab {PrefabName}");

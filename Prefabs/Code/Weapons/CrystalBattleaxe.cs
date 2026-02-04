@@ -13,7 +13,6 @@ namespace A2.NoGlow.Prefabs.Code
         {
             try
             {
-                if (!PluginConfig.DisableGlowOnCrystalBattleaxe.Value) return true;
                 if (Flags.CrystalBattleaxe != PrefabState.ToModify) return false;
 #if DEBUG
                 Jotunn.Logger.LogInfo($"{nameof(CrystalBattleaxe)}.{nameof(Modify)}: modifying state of the prefab {PrefabName}");

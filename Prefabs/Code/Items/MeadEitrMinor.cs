@@ -13,7 +13,6 @@ namespace A2.NoGlow.Prefabs.Code
         {
             try
             {
-                if (!PluginConfig.DisableGlowOnMeadEitrMinor.Value) return true;
                 if (Flags.MeadEitrMinor != PrefabState.ToModify) return false;
 #if DEBUG
                 Jotunn.Logger.LogInfo($"{nameof(MeadEitrMinor)}.{nameof(Modify)}: modifying state of the prefab {PrefabName}");

@@ -15,7 +15,6 @@ namespace A2.NoGlow.Prefabs.Code
         {
             try
             {
-                if (!PluginConfig.DisableGlowOnDyrnwyn.Value) return true;
                 if (Flags.Dyrnwyn != PrefabState.ToModify) return false;
 #if DEBUG
                 Jotunn.Logger.LogInfo($"{nameof(Dyrnwyn)}.{nameof(Modify)}: modifying state of the prefabs {PrefabName1}, {PrefabName2}");

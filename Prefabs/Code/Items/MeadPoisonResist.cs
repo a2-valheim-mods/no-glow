@@ -13,7 +13,6 @@ namespace A2.NoGlow.Prefabs.Code
         {
             try
             {
-                if (!PluginConfig.DisableGlowOnMeadPoisonResist.Value) return true;
                 if (Flags.MeadPoisonResist != PrefabState.ToModify) return false;
 #if DEBUG
                 Jotunn.Logger.LogInfo($"{nameof(MeadPoisonResist)}.{nameof(Modify)}: modifying state of the prefab {PrefabName}");

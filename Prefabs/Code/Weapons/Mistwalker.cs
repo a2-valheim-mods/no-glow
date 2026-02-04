@@ -13,7 +13,6 @@ namespace A2.NoGlow.Prefabs.Code
         {
             try
             {
-                if (!PluginConfig.DisableGlowOnMistwalker.Value) return true;
                 if (Flags.Mistwalker != PrefabState.ToModify) return false;
 #if DEBUG
                 Jotunn.Logger.LogInfo($"{nameof(Mistwalker)}.{nameof(Modify)}: modifying state of the prefab {PrefabName}");

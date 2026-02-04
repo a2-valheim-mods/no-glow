@@ -13,7 +13,6 @@ namespace A2.NoGlow.Prefabs.Code
         {
             try
             {
-                if (!PluginConfig.DisableGlowOnDraugrFang.Value) return true;
                 if (Flags.DraugrFang != PrefabState.ToModify) return false;
 #if DEBUG
                 Jotunn.Logger.LogInfo($"{nameof(DraugrFang)}.{nameof(Modify)}: modifying state of the prefab {PrefabName}");

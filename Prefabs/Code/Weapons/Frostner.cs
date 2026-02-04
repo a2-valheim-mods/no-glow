@@ -13,7 +13,6 @@ namespace A2.NoGlow.Prefabs.Code
         {
             try
             {
-                if (!PluginConfig.DisableGlowOnFrostner.Value) return true;
                 if (Flags.Frostner != PrefabState.ToModify) return false;
 #if DEBUG
                 Jotunn.Logger.LogInfo($"{nameof(Frostner)}.{nameof(Modify)}: modifying state of the prefab {PrefabName}");

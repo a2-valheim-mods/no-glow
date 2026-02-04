@@ -13,7 +13,6 @@ namespace A2.NoGlow.Prefabs.Code
         {
             try
             {
-                if (!PluginConfig.DisableGlowOnHimminafl.Value) return true;
                 if (Flags.Himminafl != PrefabState.ToModify) return false;
 #if DEBUG
                 Jotunn.Logger.LogInfo($"{nameof(Himminafl)}.{nameof(Modify)}: modifying state of the prefab {PrefabName}");

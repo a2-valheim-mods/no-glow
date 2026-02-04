@@ -13,7 +13,6 @@ namespace A2.NoGlow.Prefabs.Code
         {
             try
             {
-                if (!PluginConfig.DisableGlowOnJotunPuffs.Value) return true;
                 if (Flags.JotunPuffs != PrefabState.ToModify) return false;
 #if DEBUG
                 Jotunn.Logger.LogInfo($"{nameof(JotunPuffs)}.{nameof(Modify)}: modifying state of the prefab {PrefabName}");

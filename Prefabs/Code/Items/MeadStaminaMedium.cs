@@ -13,7 +13,6 @@ namespace A2.NoGlow.Prefabs.Code
         {
             try
             {
-                if (!PluginConfig.DisableGlowOnMeadStaminaMedium.Value) return true;
                 if (Flags.MeadStaminaMedium != PrefabState.ToModify) return false;
 #if DEBUG
                 Jotunn.Logger.LogInfo($"{nameof(MeadStaminaMedium)}.{nameof(Modify)}: modifying state of the prefab {PrefabName}");

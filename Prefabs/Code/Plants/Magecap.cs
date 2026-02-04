@@ -13,7 +13,6 @@ namespace A2.NoGlow.Prefabs.Code
         {
             try
             {
-                if (!PluginConfig.DisableGlowOnMagecap.Value) return true;
                 if (Flags.Magecap != PrefabState.ToModify) return false;
 #if DEBUG
                 Jotunn.Logger.LogInfo($"{nameof(Magecap)}.{nameof(Modify)}: modifying state of the prefab {PrefabName}");

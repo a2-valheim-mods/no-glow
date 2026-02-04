@@ -14,7 +14,6 @@ namespace A2.NoGlow.Prefabs.Code
         {
             try
             {
-                if (!PluginConfig.DisableGlowOnYellowMushroom.Value) return true;
                 if (Flags.YellowMushroom != PrefabState.ToModify) return false;
 #if DEBUG
                 Jotunn.Logger.LogInfo($"{nameof(YellowMushroom)}.{nameof(Modify)}: modifying state of the prefabs {PrefabName1}, {PrefabName2}");

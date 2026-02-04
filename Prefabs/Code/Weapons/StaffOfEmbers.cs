@@ -13,7 +13,6 @@ namespace A2.NoGlow.Prefabs.Code
         {
             try
             {
-                if (!PluginConfig.DisableGlowOnStaffOfEmbers.Value) return true;
                 if (Flags.StaffOfEmbers != PrefabState.ToModify) return false;
 #if DEBUG
                 Jotunn.Logger.LogInfo($"{nameof(StaffOfEmbers)}.{nameof(Modify)}: modifying state of the prefab {PrefabName}");

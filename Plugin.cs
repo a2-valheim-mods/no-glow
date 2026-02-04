@@ -46,6 +46,12 @@ namespace A2.NoGlow
             _harmony.UnpatchSelf();
         }
 
-        private static void OnVanillaPrefabsAvailable() => Controller.Update();
+        private static void OnVanillaPrefabsAvailable()
+        {
+#if DEBUG
+            Jotunn.Logger.LogInfo($"{nameof(Plugin)}.{nameof(OnVanillaPrefabsAvailable)}: running {nameof(Controller)}.{nameof(Controller.Update)}");
+#endif
+            Controller.Update();
+        }
     }
 }

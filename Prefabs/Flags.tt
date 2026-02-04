@@ -74,7 +74,10 @@ namespace A2.NoGlow.Prefabs
             foreach(var className in classNames)
             {
 #>
-            result = Evaluate(ref <#= className #>, PluginConfig.DisableGlowOn<#= className #>.Value) || result;
+#if DEBUG
+            Jotunn.Logger.LogInfo($"{nameof(Flags)}.{nameof(Evaluate)}: evaluating <#= className #>, state {<#= className #>}");
+#endif
+            result = Evaluate(ref <#= className #>, PluginConfig.DisableGlowOn<#= className #>?.Value ?? false) || result;
 <#
             }
 #>
@@ -124,6 +127,9 @@ namespace A2.NoGlow.Prefabs
             // disabling is turned on in config, so prefab should be modified
             if (config)
             {
+#if DEBUG
+                Jotunn.Logger.LogInfo($"{nameof(Flags)}.{nameof(Evaluate)}: {state} -> {PrefabState.ToModify}");
+#endif
                 state = PrefabState.ToModify;
                 return true;
             }
@@ -131,17 +137,17 @@ namespace A2.NoGlow.Prefabs
             // disabling is turned off in config, so prefab should be restored to it's original state
             if (state == PrefabState.ToRestore)
             {
-                return false;
                 // already marked to restore
             }
             if (state == PrefabState.Modified)
             {
                 // requires restoration
+#if DEBUG
+                Jotunn.Logger.LogInfo($"{nameof(Flags)}.{nameof(Evaluate)}: {state} -> {PrefabState.ToRestore}");
+#endif
                 state = PrefabState.ToRestore;
                 return true;
             }
-
-            state = PrefabState.Unknown;
             return false;
         }
 

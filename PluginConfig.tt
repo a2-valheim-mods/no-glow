@@ -100,7 +100,7 @@ namespace A2.NoGlow
 #>
         }
 
-        private static ConfigEntry<bool> WithChangedHandler(ConfigEntry<bool> configEntry)
+        private static ConfigEntry<bool>? WithChangedHandler(ConfigEntry<bool>? configEntry)
         {
             if (configEntry is not null)
             {
@@ -109,6 +109,11 @@ namespace A2.NoGlow
             return configEntry;
         }
 
-        private static void OnSettingsChanged(object sender, System.EventArgs e) =>  Controller.Update();
+        private static void OnSettingsChanged(object sender, System.EventArgs e) {
+#if DEBUG
+            Jotunn.Logger.LogInfo($"{nameof(PluginConfig)}.{nameof(OnSettingsChanged)}: running {nameof(Controller)}.{nameof(Controller.Update)}");
+#endif
+            Controller.Update();
+        }
     }
 }

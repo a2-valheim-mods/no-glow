@@ -12,6 +12,7 @@ Build/Thunderstore/manifest.json
 PluginConfig.cs
 Prefabs/Flags.cs
 Prefabs/Controller.cs
+Build/Cache
 
 ## Visual Studio
 ## https://github.com/github/gitignore/blob/main/VisualStudio.gitignore

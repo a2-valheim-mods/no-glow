@@ -125,8 +125,7 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>README.md</LastGenOutput>
     </Content>
-    <None Include="Build\Thunderstore\Helpers\BepInExPackVersion.tt.part" />
-    <None Include="Build\Thunderstore\Helpers\JotunnVersion.tt.part" />
+    <None Include="Build\Thunderstore\Helpers\GetPackageLatestVersion.tt.part" />
     <Content Include="PluginConfig.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>PluginConfig.cs</LastGenOutput>
